@@ -1,6 +1,8 @@
 __pycache__/
 token.txt
 DAP_config.json
+DAP_apps.json
+svcl.exe
 *.exe
 *.log
 *.dll

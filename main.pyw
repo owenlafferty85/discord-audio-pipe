@@ -15,6 +15,7 @@ logging_setup.install_excepthook()
 import sys
 import cli
 import sound
+import app_router
 import instrumentation
 import asyncio
 import discord
@@ -177,6 +178,10 @@ async def main(bot):
 
 bot = discord.Client(intents=discord.Intents.default())
 
+# Route the apps listed in DAP_apps.json into the bot's capture device while
+# the bot runs. Queries only list things, so they leave routing alone.
+router = None if (args.query or args.online) else app_router.start_if_configured()
+
 try:
     asyncio.run(main(bot))
 except KeyboardInterrupt as exc:
@@ -192,4 +197,6 @@ else:
     # First-writer-wins means a GUI close already recorded itself here.
     logging_setup.note_shutdown("discord-client-exit")
 finally:
+    if router is not None:
+        router.stop()
     logging_setup.log_shutdown()

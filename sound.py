@@ -1,3 +1,14 @@
+import os
+import sys
+
+# On PipeWire, an ALSA device that targets a node (like the "audio_player"
+# capture device app_router.py sets up) silently falls back to the default
+# microphone when that node is missing. dont-fallback makes the open fail
+# instead, so a missing virtual device can never put a mic on air. Set before
+# PortAudio opens anything; the PipeWire ALSA plugin reads it per stream.
+if sys.platform.startswith("linux"):
+    os.environ.setdefault("PIPEWIRE_ALSA", "{ node.dont-fallback = true }")
+
 import discord
 import sounddevice as sd
 from pprint import pformat
